@@ -176,7 +176,7 @@ if uploaded_history is not None:
     except Exception as e:
         st.error(f"昨日 CSV 讀取失敗：{e}")
 
-# --- 5. 運算與 B. 昨日對比有變動日期及金額 (過濾過去日期) ---
+# --- 5. 運算與 B. 昨日對比有變動日期及金額 ---
 today_records = []
 changed_results = []
 
@@ -210,42 +210,43 @@ for item in months_to_input:
                 "區間金額": price
             })
 
-            # 比對昨日價格
+            # 比對昨日價格（僅保留指定的四欄）
             if date_key in yesterday_prices:
                 old_p = yesterday_prices[date_key]
                 if price != old_p:
-                    diff = price - old_p
-                    diff_str = f"+{diff}" if diff > 0 else f"{diff}"
                     changed_results.append({
                         "日期": date_key,
                         "距今(天)": days_diff,
-                        "舊金額": old_p,
                         "最新金額": price,
-                        "變動幅度": diff_str,
                         "變動通知": "🔥 變動！"
                     })
 
 st.write("---")
 st.subheader("B. 昨日對比有變動日期及金額")
 
-# 定義顏色標註邏輯
+# 定義顏色標註邏輯 (底色與對應的深色文字)
 def color_rows(row):
     days = row["距今(天)"]
     if 0 <= days <= 30:
-        # 黃色 (淡黃色高亮，易於閱讀文字)
+        # 黃色底，深黃棕色字
         return ['background-color: #FFF3CD; color: #856404; font-weight: bold;'] * len(row)
     elif 31 <= days <= 60:
-        # 橘色
+        # 橘色底，深橘紅字
         return ['background-color: #FFE5D0; color: #A73A00; font-weight: bold;'] * len(row)
     else:
-        # 61天以上：綠色
+        # 綠色底，深綠字
         return ['background-color: #D1E7DD; color: #0F5132; font-weight: bold;'] * len(row)
 
 if changed_results:
     res_df = pd.DataFrame(changed_results)
     
-    # 呈現圖例說明
-    st.caption("🎨 **天數顏色圖例**：黃色 (0~30天) | 橘色 (31~60天) | 綠色 (61天以上)")
+    # 呈現自訂 HTML 彩色圖例說明
+    st.markdown("""
+    🎨 **天數顏色圖例**：
+    <span style="color: #E6A100; font-weight: bold;">黃色(0~30天)</span> | 
+    <span style="color: #D9531E; font-weight: bold;">橘色(31~60天)</span> | 
+    <span style="color: #198754; font-weight: bold;">綠色(61天以上)</span>
+    """, unsafe_allow_html=True)
     
     # 套用顏色樣式
     styled_df = res_df.style.apply(color_rows, axis=1)
@@ -257,9 +258,7 @@ if changed_results:
         column_config={
             "日期": st.column_config.TextColumn("日期"),
             "距今(天)": st.column_config.NumberColumn("距今(天)", format="%d 天"),
-            "舊金額": st.column_config.NumberColumn("舊金額", format="%d"),
             "最新金額": st.column_config.NumberColumn("最新金額", format="%d"),
-            "變動幅度": st.column_config.TextColumn("變動幅度"),
             "變動通知": st.column_config.TextColumn("變動通知")
         }
     )

@@ -240,10 +240,10 @@ def color_rows(row):
 if changed_results:
     res_df = pd.DataFrame(changed_results)
     
-    # 直接顯示乾淨的彩色天數標籤說明
+    # 改用短橫線 -
     st.markdown("""
-    <span style="color: #E6A100; font-weight: bold;">黃色(0~30天)</span> | 
-    <span style="color: #D9531E; font-weight: bold;">橘色(31~60天)</span> | 
+    <span style="color: #E6A100; font-weight: bold;">黃色(0-30天)</span> | 
+    <span style="color: #D9531E; font-weight: bold;">橘色(31-60天)</span> | 
     <span style="color: #198754; font-weight: bold;">綠色(61天以上)</span>
     """, unsafe_allow_html=True)
     

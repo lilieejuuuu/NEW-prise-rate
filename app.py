@@ -210,7 +210,7 @@ for item in months_to_input:
                 "區間金額": price
             })
 
-            # 比對昨日價格（僅保留指定的四欄）
+            # 比對昨日價格
             if date_key in yesterday_prices:
                 old_p = yesterday_prices[date_key]
                 if price != old_p:
@@ -240,9 +240,8 @@ def color_rows(row):
 if changed_results:
     res_df = pd.DataFrame(changed_results)
     
-    # 呈現自訂 HTML 彩色圖例說明
+    # 直接顯示乾淨的彩色天數標籤說明
     st.markdown("""
-    🎨 **天數顏色圖例**：
     <span style="color: #E6A100; font-weight: bold;">黃色(0~30天)</span> | 
     <span style="color: #D9531E; font-weight: bold;">橘色(31~60天)</span> | 
     <span style="color: #198754; font-weight: bold;">綠色(61天以上)</span>

@@ -7,10 +7,21 @@ st.set_page_config(page_title="稼動率料金變動比對系統", layout="cente
 
 st.title("稼動率料金變動比對系統")
 
-# --- 1. 最新精確淡旺季與天數階梯料金計算邏輯 ---
-def calculate_price(month, days_diff, util):
-    # 判斷淡季月份 (1, 2, 6, 9, 12月)
-    is_low_season = month in [1, 2, 6, 9, 12]
+# --- 1. 最新精確淡旺季（含例外日期）與天數階梯料金計算邏輯 ---
+def calculate_price(month, day, days_diff, util):
+    # 判斷是否為淡季
+    is_low_season = False
+
+    # 1. 整個月皆為淡季：1, 2, 6, 9 月
+    if month in [1, 2, 6, 9]:
+        is_low_season = True
+    # 2. 特殊例外的淡季指定區段
+    elif month == 7 and 1 <= day <= 10:
+        is_low_season = True
+    elif month == 8 and 20 <= day <= 31:
+        is_low_season = True
+    elif month == 12 and 1 <= day <= 15:
+        is_low_season = True
 
     # 【淡季對照表】
     if is_low_season:
@@ -55,7 +66,7 @@ def calculate_price(month, days_diff, util):
             elif 31 <= days_diff <= 60: return 19000
             else: return 19500
 
-    # 【旺季對照表】(3, 4, 5, 7, 8, 10, 11月)
+    # 【旺季對照表】(其餘月份與日期區間)
     else:
         if util <= 20.0:
             if days_diff >= 61: return 12500
@@ -227,8 +238,8 @@ for item in months_to_input:
             target_date = date(y, m, day)
             days_diff = (target_date - base_date).days
 
-            # 傳入月份、距今天數、稼動率進行精確三維金額計算
-            price = calculate_price(m, days_diff, util_val)
+            # 傳入月份、具體日期(day)、距今天數、稼動率進行精確計算
+            price = calculate_price(m, day, days_diff, util_val)
 
             today_records.append({
                 "更新日": update_date_input,

@@ -255,8 +255,7 @@ for item in months_to_input:
                     changed_results.append({
                         "日期": date_key,
                         "距今(天)": days_diff,
-                        "最新金額": price,
-                        "變動通知": "🔥 變動！"
+                        "最新金額": price
                     })
 
 st.write("---")
@@ -295,8 +294,7 @@ if changed_results:
         column_config={
             "日期": st.column_config.TextColumn("日期"),
             "距今(天)": st.column_config.NumberColumn("距今(天)", format="%d 天"),
-            "最新金額": st.column_config.NumberColumn("最新金額", format="%d"),
-            "變動通知": st.column_config.TextColumn("變動通知")
+            "最新金額": st.column_config.NumberColumn("最新金額", format="%d")
         }
     )
 else:

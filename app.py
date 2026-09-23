@@ -7,71 +7,96 @@ st.set_page_config(page_title="稼動率料金變動比對系統", layout="cente
 
 st.title("稼動率料金變動比對系統")
 
-# --- 1. 精確淡旺季與獨立階梯料金計算邏輯 ---
-def calculate_price(month, day, util):
-    # 判斷是否為淡季日期
-    is_low_season = False
-    
-    # 1. 整個月皆為淡季：1, 2, 6, 9 月
-    if month in [1, 2, 6, 9]:
-        is_low_season = True
-    # 2. 特殊月份的淡季指定區段
-    elif month == 7 and 1 <= day <= 10:
-        is_low_season = True
-    elif month == 8 and 20 <= day <= 31:
-        is_low_season = True
-    elif month == 12 and 1 <= day <= 15:
-        is_low_season = True
+# --- 1. 最新精確淡旺季與天數階梯料金計算邏輯 ---
+def calculate_price(month, days_diff, util):
+    # 判斷淡季月份 (1, 2, 6, 9, 12月)
+    is_low_season = month in [1, 2, 6, 9, 12]
 
-    # 1. 淡季專屬對照表
+    # 【淡季對照表】
     if is_low_season:
         if util <= 20.0:
-            return 11000
+            if days_diff >= 61: return 11000
+            elif 31 <= days_diff <= 60: return 11500
+            else: return 11750  # 0~30天
         elif util <= 30.0:
-            return 11500
+            if days_diff >= 61: return 11500
+            elif 31 <= days_diff <= 60: return 12000
+            else: return 12250
         elif util <= 40.0:
-            return 12000
+            if days_diff >= 61: return 12000
+            elif 31 <= days_diff <= 60: return 12500
+            else: return 12750
         elif util <= 50.0:
-            return 12250
+            if days_diff >= 61: return 12250
+            elif 31 <= days_diff <= 60: return 13250
+            else: return 13500
         elif util <= 60.0:
-            return 12500
+            if days_diff >= 61: return 13000
+            elif 31 <= days_diff <= 60: return 13750
+            else: return 14000
         elif util <= 70.0:
-            return 14110
-        elif util <= 75.0:
-            return 14300
+            if days_diff >= 61: return 13750
+            elif 31 <= days_diff <= 60: return 14750
+            else: return 15000
         elif util <= 80.0:
-            return 14500
+            if days_diff >= 61: return 14500
+            elif 31 <= days_diff <= 60: return 15750
+            else: return 16000
         elif util <= 85.0:
-            return 15000
+            if days_diff >= 61: return 15000
+            elif 31 <= days_diff <= 60: return 16250
+            else: return 16500
         elif util <= 90.0:
-            return 15500
+            if days_diff >= 61: return 15750
+            elif 31 <= days_diff <= 60: return 17000
+            else: return 17500
         else:               # 91% 以上
-            return 17500
+            if days_diff >= 61: return 17500
+            elif 31 <= days_diff <= 60: return 19000
+            else: return 19500
 
-    # 2. 旺季專屬對照表 (其餘所有日期)
+    # 【旺季對照表】(3, 4, 5, 7, 8, 10, 11月)
     else:
         if util <= 20.0:
-            return 12500
+            if days_diff >= 61: return 12500
+            elif 31 <= days_diff <= 60: return 13000
+            else: return 13250
         elif util <= 30.0:
-            return 13000
+            if days_diff >= 61: return 13000
+            elif 31 <= days_diff <= 60: return 13500
+            else: return 13750
         elif util <= 40.0:
-            return 13500
+            if days_diff >= 61: return 13500
+            elif 31 <= days_diff <= 60: return 14000
+            else: return 14250
         elif util <= 50.0:
-            return 13800
+            if days_diff >= 61: return 13750
+            elif 31 <= days_diff <= 60: return 14500
+            else: return 14750
         elif util <= 60.0:
-            return 14000
+            if days_diff >= 61: return 14000
+            elif 31 <= days_diff <= 60: return 14750
+            else: return 15000
         elif util <= 70.0:
-            return 14250
-        elif util <= 75.0:
-            return 14400
+            if days_diff >= 61: return 14250
+            elif 31 <= days_diff <= 60: return 15000
+            else: return 15250
         elif util <= 80.0:
-            return 14500
+            if days_diff >= 61: return 14750
+            elif 31 <= days_diff <= 60: return 16000
+            else: return 16250
         elif util <= 85.0:
-            return 14800
+            if days_diff >= 61: return 15250
+            elif 31 <= days_diff <= 60: return 16500
+            else: return 16750
         elif util <= 90.0:
-            return 16000
+            if days_diff >= 61: return 16250
+            elif 31 <= days_diff <= 60: return 17500
+            else: return 18000
         else:               # 91% 以上
-            return 18000
+            if days_diff >= 61: return 18000
+            elif 31 <= days_diff <= 60: return 19500
+            else: return 20000
 
 DAYS_IN_MONTH = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31}
 
@@ -196,12 +221,14 @@ for item in months_to_input:
                 continue
 
             util_val = float(num_str)
-            price = calculate_price(m, day, util_val)
             date_key = f"{m}/{day}"
 
             # 計算該日期與基礎日期的距離天數
             target_date = date(y, m, day)
             days_diff = (target_date - base_date).days
+
+            # 傳入月份、距今天數、稼動率進行精確三維金額計算
+            price = calculate_price(m, days_diff, util_val)
 
             today_records.append({
                 "更新日": update_date_input,
@@ -240,7 +267,7 @@ def color_rows(row):
 if changed_results:
     res_df = pd.DataFrame(changed_results)
     
-    # 改用短橫線 -
+    # 彩色標籤說明 (使用 - 短橫線)
     st.markdown("""
     <span style="color: #E6A100; font-weight: bold;">黃色(0-30天)</span> | 
     <span style="color: #D9531E; font-weight: bold;">橘色(31-60天)</span> | 

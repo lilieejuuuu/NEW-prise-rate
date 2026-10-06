@@ -28,27 +28,27 @@ def calculate_price(month, day, days_diff, util):
         if util <= 20.0:
             if days_diff >= 61: return 11000
             elif 31 <= days_diff <= 60: return 11500
-            else: return 11750  # 0~30天
+            else: return 11000  # 0~30天
         elif util <= 30.0:
             if days_diff >= 61: return 11500
             elif 31 <= days_diff <= 60: return 12000
-            else: return 12250
+            else: return 11500
         elif util <= 40.0:
             if days_diff >= 61: return 12000
             elif 31 <= days_diff <= 60: return 12500
-            else: return 12750
+            else: return 12000
         elif util <= 50.0:
             if days_diff >= 61: return 12250
             elif 31 <= days_diff <= 60: return 13250
-            else: return 13500
+            else: return 12250
         elif util <= 60.0:
             if days_diff >= 61: return 13000
             elif 31 <= days_diff <= 60: return 13750
-            else: return 14000
+            else: return 13000
         elif util <= 70.0:
             if days_diff >= 61: return 13750
             elif 31 <= days_diff <= 60: return 14750
-            else: return 15000
+            else: return 13750
         elif util <= 80.0:
             if days_diff >= 61: return 14500
             elif 31 <= days_diff <= 60: return 15750
@@ -71,27 +71,27 @@ def calculate_price(month, day, days_diff, util):
         if util <= 20.0:
             if days_diff >= 61: return 12500
             elif 31 <= days_diff <= 60: return 13000
-            else: return 13250
+            else: return 12500
         elif util <= 30.0:
             if days_diff >= 61: return 13000
             elif 31 <= days_diff <= 60: return 13500
-            else: return 13750
+            else: return 13000
         elif util <= 40.0:
             if days_diff >= 61: return 13500
             elif 31 <= days_diff <= 60: return 14000
-            else: return 14250
+            else: return 13500
         elif util <= 50.0:
             if days_diff >= 61: return 13750
             elif 31 <= days_diff <= 60: return 14500
-            else: return 14750
+            else: return 13750
         elif util <= 60.0:
             if days_diff >= 61: return 14000
             elif 31 <= days_diff <= 60: return 14750
-            else: return 15000
+            else: return 14000
         elif util <= 70.0:
             if days_diff >= 61: return 14250
             elif 31 <= days_diff <= 60: return 15000
-            else: return 15250
+            else: return 14250
         elif util <= 80.0:
             if days_diff >= 61: return 14750
             elif 31 <= days_diff <= 60: return 16000

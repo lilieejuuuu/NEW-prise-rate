@@ -149,4 +149,6 @@ for item in months_to_input:
     
     month_inputs[m] = st.text_input(
         label,
-        placeholder=f"貼上 {m} 月
+        placeholder=f"貼上 {m} 月 1~31 號稼動率 (可只貼想看的部分月份)...",
+        key=f"input_{m}"
+    )
